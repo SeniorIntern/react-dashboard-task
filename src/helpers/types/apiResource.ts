@@ -10,6 +10,7 @@ const apiResources = {
   playerUpdate: `${baseUrl}/user/player/update`,
   playerState: `${baseUrl}/user/player/setInactive`,
   leaderboard: `${baseUrl}/leaderboard`,
+  searchPlayer: `${baseUrl}/user/players/all?`,
 };
 
 export const apiResource = apiResources;

@@ -1,5 +1,6 @@
 import {
   LoginFormState,
+  NewUserFormState,
   PlayerUpdateFormState,
   RegistrationFormState,
 } from "./FormStateTypes";
@@ -27,3 +28,11 @@ type PlayerUpdateFormActionType = {
 };
 
 export type PlayerUpdateFormAction = PlayerUpdateFormActionType;
+
+type NewUserFormActionType = {
+  type: "UPDATE_FIELD" | "RESET";
+  field?: keyof NewUserFormState;
+  value?: string;
+};
+
+export type NewUserFormAction = NewUserFormActionType;

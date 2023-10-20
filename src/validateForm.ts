@@ -13,6 +13,7 @@ interface CreateUserForm {
   role: string;
   email: string;
   password: string;
+  country?: string;
 }
 
 // player registration

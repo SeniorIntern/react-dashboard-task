@@ -15,6 +15,10 @@ import UserDataType from "./helpers/types/UserDataType";
 import axios from "axios";
 import { apiResource } from "./helpers/types/apiResource";
 import PermissionDenied from "./pages/PermissionDenied";
+import PlayerRegistration from "./pages/PlayerRegistration";
+import { getLocalStorage } from "./helpers/types/getLocalStorage";
+import PlayerDataType from "./helpers/types/PlayerDataType";
+import { PlayersContext } from "./context/PlayersContext";
 
 const Home = lazy(() => import("./pages/Home"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -27,6 +31,7 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<UserDataType>({} as UserDataType);
+  const [players, setPlayers] = useState<PlayerDataType[]>([]);
 
   useEffect(() => {
     const refreshUserData = async () => {
@@ -68,6 +73,25 @@ export default function App() {
     }
   }, [user]);
 
+  useEffect(() => {
+    const token = getLocalStorage("token");
+    const fetchPlayers = async () => {
+      const endpoint = apiResource.players + `?pageSize=20&page=1`;
+      try {
+        const res = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setPlayers(res.data.data);
+      } catch (e: unknown) {
+        console.log(e);
+      }
+    };
+    console.log("player fetch once...");
+    fetchPlayers();
+  }, []);
+
   type RoleTypes = "admin" | "staff" | "player";
   // function to check if the user has the required role
   const hasRole = (user: UserDataType, requiredRole: RoleTypes) => {
@@ -77,65 +101,72 @@ export default function App() {
   return (
     <>
       <UserContext.Provider value={{ user, setUser }}>
-        {Object.keys(user).length === 0 ? (
-          <Login />
-        ) : (
-          <Suspense fallback={<FallbackLoader />}>
+        <PlayersContext.Provider value={{ players, setPlayers }}>
+          {Object.keys(user).length === 0 ? (
             <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Home />} />
-                <Route
-                  path="players"
-                  element={
-                    hasRole(user, "admin") || hasRole(user, "staff") ? (
-                      <Players />
-                    ) : (
-                      <Navigate to="/permission-denied" />
-                    )
-                  }
-                />
-
-                <Route
-                  path="users"
-                  element={
-                    hasRole(user, "admin") ? (
-                      <Users />
-                    ) : (
-                      <Navigate to="/permission-denied" />
-                    )
-                  }
-                />
-
-                <Route
-                  path="chat"
-                  element={
-                    hasRole(user, "player") ? (
-                      <Chat />
-                    ) : (
-                      <Navigate to="/permission-denied" />
-                    )
-                  }
-                />
-
-                <Route
-                  path="leaderboard"
-                  element={
-                    hasRole(user, "player") ? (
-                      <Leaderboard />
-                    ) : (
-                      <Navigate to="/permission-denied" />
-                    )
-                  }
-                />
-                <Route
-                  path="permission-denied"
-                  element={<PermissionDenied />}
-                />
-                <Route path="*" element={<NotFound />} />
+              <Route>
+                <Route path="login" element={<Login />} />
+                <Route path="*" element={<PlayerRegistration />} />
               </Route>
             </Routes>
-          </Suspense>
-        )}
+          ) : (
+            <Suspense fallback={<FallbackLoader />}>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route
+                    path="players"
+                    element={
+                      hasRole(user, "admin") || hasRole(user, "staff") ? (
+                        <Players />
+                      ) : (
+                        <Navigate to="/permission-denied" />
+                      )
+                    }
+                  />
+
+                  <Route
+                    path="users"
+                    element={
+                      hasRole(user, "admin") ? (
+                        <Users />
+                      ) : (
+                        <Navigate to="/permission-denied" />
+                      )
+                    }
+                  />
+
+                  <Route
+                    path="chat"
+                    element={
+                      hasRole(user, "player") ? (
+                        <Chat />
+                      ) : (
+                        <Navigate to="/permission-denied" />
+                      )
+                    }
+                  />
+
+                  <Route
+                    path="leaderboard"
+                    element={
+                      hasRole(user, "player") ? (
+                        <Leaderboard />
+                      ) : (
+                        <Navigate to="/permission-denied" />
+                      )
+                    }
+                  />
+                  <Route
+                    path="permission-denied"
+                    element={<PermissionDenied />}
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          )}
+        </PlayersContext.Provider>
       </UserContext.Provider>
     </>
   );

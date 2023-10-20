@@ -2,44 +2,64 @@ import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import UserDataType from "../helpers/types/UserDataType";
+import Header from "./shared/Header";
 
 export default function Layout() {
   const { user, setUser } = useContext(UserContext);
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <nav>
-        <ul className="flex justify-between px-4">
+      <nav className="flex justify-between items-center h-16 bg-[var(--orange)] px-6 text-white">
+        <ul className="flex justify-between w-[15%]">
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
-            <Link to="/players">Players</Link>
-          </li>
-          <li>
-            <Link to="/users">Users</Link>
-          </li>
-          <li>
-            <Link to="/leaderboard">Leaderboard</Link>
-          </li>
-          <li>
-            <Link to="/chat">Chat</Link>
-          </li>
+          {user.role == "player" && (
+            <>
+              <li>
+                <Link to="/leaderboard">Leaderboard</Link>
+              </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+            </>
+          )}
+          {user.role == "admin" && (
+            <li>
+              <Link to="/players">Players</Link>
+            </li>
+          )}
+          {user.role == "admin" || user.role == "staff" ? (
+            <li>
+              <Link to="/users">Users</Link>
+            </li>
+          ) : null}
         </ul>
 
-        <span>
-          <p>Hello {user?.name && user.name}</p>
-        </span>
-        <button
-          onClick={() => {
-            setUser({} as UserDataType);
-            localStorage.removeItem("user");
-            window.location.reload();
-          }}
-        >
-          Logout
-        </button>
+        <div className="w-[50%] text-black h-full">
+          <Header />
+        </div>
+
+        <div className="grid gap-0 w-[10%]">
+          {user?.name && (
+            <span className="text-center">
+              {user.name}
+              <p className="inline">({user.role})</p>
+            </span>
+          )}
+          <button
+            onClick={() => {
+              setUser({} as UserDataType);
+              localStorage.removeItem("user");
+              window.location.reload();
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </nav>
-      <Outlet />
+      <main className="min-h-[calc(100vh-4rem)] p-12 flex flex-col justify-center">
+        <Outlet />
+      </main>
     </div>
   );
 }

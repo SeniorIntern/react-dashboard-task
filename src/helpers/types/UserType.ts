@@ -1,8 +1,11 @@
-import UserDataType from "./UserDataType";
-
-type UserType = {
-  user: UserDataType;
-  setUser: React.Dispatch<React.SetStateAction<UserDataType>>;
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
+  refresh_key?: string;
 };
-
-export default UserType;
+export default User;

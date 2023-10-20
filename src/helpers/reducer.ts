@@ -1,10 +1,12 @@
 import {
   LoginFormAction,
+  NewUserFormAction,
   PlayerUpdateFormAction,
   RegistrationFormAction,
 } from "./types/FormActionTypes";
 import {
   LoginFormState,
+  NewUserFormState,
   PlayerUpdateFormState,
   RegistrationFormState,
 } from "./types/FormStateTypes";
@@ -24,6 +26,27 @@ export const loginFormReducer = (
       return { ...state, [action.field as string]: action.value };
     case "RESET":
       return loginInitialState;
+    default:
+      return state;
+  }
+};
+
+export const newUserInitialState: NewUserFormState = {
+  role: "",
+  name: "",
+  email: "",
+  password: "",
+};
+
+export const newUserFormReducer = (
+  state: NewUserFormState,
+  action: NewUserFormAction,
+) => {
+  switch (action.type) {
+    case "UPDATE_FIELD":
+      return { ...state, [action.field as string]: action.value };
+    case "RESET":
+      return newUserInitialState;
     default:
       return state;
   }
