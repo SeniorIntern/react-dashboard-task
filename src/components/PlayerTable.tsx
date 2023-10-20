@@ -1,6 +1,5 @@
-import React, { useReducer, useState } from "react";
+import React, { useContext, useReducer, useState } from "react";
 import axios from "axios";
-import { getLocalStorage } from "../helpers/types/getLocalStorage";
 import { apiResource } from "../helpers/types/apiResource";
 import validateForm from "../validateForm";
 import {
@@ -9,13 +8,14 @@ import {
 } from "../helpers/reducer";
 import PlayerDataType from "../helpers/types/PlayerDataType";
 import PlayerActionModal from "./PlayerActionModal";
+import { UserContext } from "../context/UserContext";
 
 interface PlayerTableProps {
   players: PlayerDataType[]; // Assuming that players is an array of PlayerDataType
 }
 
 const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
-  const token = getLocalStorage("token");
+  const { user } = useContext(UserContext);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerDataType>({
@@ -43,13 +43,13 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
     try {
       const endpoint = apiResource.playerState + "/" + id;
       console.log("endpoint===", endpoint);
-      console.log("token===", `Bearer ${token}`);
+      console.log("token===", `Bearer ${user.accessToken}`);
       const res = await axios.patch(
         endpoint,
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         },
       );
@@ -129,7 +129,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${user.accessToken}`,
             },
           },
         );
@@ -171,12 +171,18 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
             <th>Experience Points</th>
             <th>Games Played</th>
             <th>Games Won</th>
-            <th>Update</th>
-            <th>Change Status</th>
+            {user.role !== "player" ? (
+              <>
+                <th>Update</th>
+                <th>Change Status</th>
+              </>
+            ) : (
+              <td className="bg-[var(--green)]">Rank</td>
+            )}
           </tr>
         </thead>
         <tbody>
-          {players?.map((player) => (
+          {players?.map((player, index) => (
             <tr key={player.id}>
               <td>{player.id}</td>
               <td>{player.name}</td>
@@ -186,26 +192,34 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
               <td>{player.statistics.experience_point}</td>
               <td>{player.statistics.games_played}</td>
               <td>{player.statistics.games_won}</td>
-              <td
-                onClick={() => {
-                  setSelectedPlayer(player);
-                  showPlayActionModal();
-                }}
-                className="text-center cursor-pointer"
-              >
-                ✏️
-              </td>
-              {isLoading ? (
-                <th className="text-[var(--blue)]">PROCESSING...</th>
+              {user.role !== "player" ? (
+                <>
+                  <td
+                    onClick={() => {
+                      setSelectedPlayer(player);
+                      showPlayActionModal();
+                    }}
+                    className="text-center cursor-pointer"
+                  >
+                    ✏️
+                  </td>
+                  {isLoading ? (
+                    <td className="text-[var(--blue)]">PROCESSING...</td>
+                  ) : (
+                    <td
+                      className="text-[var(--blue)] cursor-pointer"
+                      onClick={() => {
+                        handleStatusChange(player.id);
+                      }}
+                    >
+                      {!player.active ? "active" : "Inactive"}
+                    </td>
+                  )}
+                </>
               ) : (
-                <th
-                  className="text-[var(--blue)] cursor-pointer"
-                  onClick={() => {
-                    handleStatusChange(player.id);
-                  }}
-                >
-                  {!player.active ? "active" : "Inactive"}
-                </th>
+                <td className="bg-[var(--orange)] text-white font-bold">
+                  {index + 1}
+                </td>
               )}
             </tr>
           ))}

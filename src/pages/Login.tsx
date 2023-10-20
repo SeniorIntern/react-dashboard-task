@@ -153,9 +153,11 @@ export default function Login() {
           )}
         </div>
         <Link to={routes.registerPlayer}>
-          <p className="text-white text-[0.75rem]">
-            New Player? Create an account.
-          </p>
+          <div className="flex justify-center">
+            <p className="text-white border-b border-blue-800 w-fit">
+              New Player? Create an account.
+            </p>
+          </div>
         </Link>
       </form>
     </section>

@@ -16,7 +16,6 @@ import axios from "axios";
 import { apiResource } from "./helpers/types/apiResource";
 import PermissionDenied from "./pages/PermissionDenied";
 import PlayerRegistration from "./pages/PlayerRegistration";
-import { getLocalStorage } from "./helpers/types/getLocalStorage";
 import PlayerDataType from "./helpers/types/PlayerDataType";
 import { PlayersContext } from "./context/PlayersContext";
 
@@ -74,13 +73,12 @@ export default function App() {
   }, [user]);
 
   useEffect(() => {
-    const token = getLocalStorage("token");
     const fetchPlayers = async () => {
       const endpoint = apiResource.players + `?pageSize=20&page=1`;
       try {
         const res = await axios.get(endpoint, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         });
         setPlayers(res.data.data);
@@ -157,6 +155,7 @@ export default function App() {
                       )
                     }
                   />
+
                   <Route
                     path="permission-denied"
                     element={<PermissionDenied />}

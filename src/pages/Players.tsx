@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { getLocalStorage } from "../helpers/types/getLocalStorage";
 import PlayerTable from "../components/PlayerTable";
 import PaginationLinkTypes from "../helpers/types/PaginationLinkTypes";
 import axios from "axios";
 import { apiResource } from "../helpers/types/apiResource";
 import { PlayersContext } from "../context/PlayersContext";
+import { UserContext } from "../context/UserContext";
 
 export default function Players() {
   const contextValue = useContext(PlayersContext);
+  const { user } = useContext(UserContext);
   const players = contextValue?.players;
   const setPlayers = contextValue?.setPlayers;
   const [paginationLinks, setPaginationLinks] = useState<PaginationLinkTypes>({
@@ -16,7 +17,6 @@ export default function Players() {
     next: "",
     prev: "",
   });
-  const token = getLocalStorage("token");
   const initialUrl = apiResource.players + `?pageSize=20&page=1`;
 
   const handlePagination = async (endpoint: string) => {
@@ -24,7 +24,7 @@ export default function Players() {
     try {
       const res = await axios.get(api, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.accessToken}`,
         },
       });
       console.log("players endpoint===", endpoint);
@@ -45,7 +45,7 @@ export default function Players() {
       try {
         const res = await axios.get(initialUrl, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         });
         console.log("res===", res.data);

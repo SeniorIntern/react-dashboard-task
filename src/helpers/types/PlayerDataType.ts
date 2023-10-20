@@ -1,6 +1,8 @@
 type PlayerDataType = {
   id: string;
   name: string;
+  password?: string;
+  rank?: number;
   active: boolean;
   country: string;
   statistics: {

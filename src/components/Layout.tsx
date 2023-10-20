@@ -1,10 +1,12 @@
 import { useContext } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import UserDataType from "../helpers/types/UserDataType";
 import Header from "./shared/Header";
+import routes from "../helpers/routes";
 
 export default function Layout() {
+  const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
   return (
     <div className="flex flex-col min-h-screen w-full">
@@ -42,7 +44,7 @@ export default function Layout() {
         <div className="grid gap-0 w-[10%]">
           {user?.name && (
             <span className="text-center">
-              {user.name}
+              {user.name.substring(0, 12)}
               <p className="inline">({user.role})</p>
             </span>
           )}
@@ -50,10 +52,12 @@ export default function Layout() {
             onClick={() => {
               setUser({} as UserDataType);
               localStorage.removeItem("user");
-              window.location.reload();
+              /* window.location.replace(routes.login); */
+              navigate(routes.login);
             }}
+            className="bg-red-600 p-1 rounded-lg"
           >
-            Logout
+            LOGOUT
           </button>
         </div>
       </nav>

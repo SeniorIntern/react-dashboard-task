@@ -1,4 +1,5 @@
 const baseUrl = import.meta.env.VITE_BASE_URL;
+/* /player resource is used for login, register by admin/staff. fetch details for players*/
 const apiResources = {
   base: baseUrl,
   allUser: `${baseUrl}/user`,
@@ -9,8 +10,9 @@ const apiResources = {
   playerLogin: `${baseUrl}/player`,
   playerUpdate: `${baseUrl}/user/player/update`,
   playerState: `${baseUrl}/user/player/setInactive`,
-  leaderboard: `${baseUrl}/leaderboard`,
+  leaderboard: `${baseUrl}/player/leaderboard`,
   searchPlayer: `${baseUrl}/user/players/all?`,
+  playGame: `${baseUrl}/player/play/game`,
 };
 
 export const apiResource = apiResources;

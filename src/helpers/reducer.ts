@@ -11,6 +11,7 @@ import {
   RegistrationFormState,
 } from "./types/FormStateTypes";
 
+// initial state for all user (admin, staff, player)  form
 export const loginInitialState: LoginFormState = {
   role: "",
   email: "",
@@ -31,6 +32,7 @@ export const loginFormReducer = (
   }
 };
 
+// initial state for admin, staff register form
 export const newUserInitialState: NewUserFormState = {
   role: "",
   name: "",
@@ -52,6 +54,7 @@ export const newUserFormReducer = (
   }
 };
 
+// initial state for player register form
 export const registrationInitialState: RegistrationFormState = {
   username: "",
   email: "",
@@ -73,6 +76,7 @@ export const registrationFormReducer = (
   }
 };
 
+// initial state for player update form
 export const playerUpdateInitialState: PlayerUpdateFormState = {
   name: "",
   email: "",

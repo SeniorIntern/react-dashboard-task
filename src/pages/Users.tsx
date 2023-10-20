@@ -1,15 +1,16 @@
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import User from "../helpers/types/UserType";
-import { getLocalStorage } from "../helpers/types/getLocalStorage";
 import validateForm from "../validateForm";
 import axios from "axios";
 import { apiResource } from "../helpers/types/apiResource";
 import Modal from "../components/UserAddModal";
 import UserTabView from "../components/UserTabView";
 import { newUserFormReducer, newUserInitialState } from "../helpers/reducer";
+import { UserContext } from "../context/UserContext";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
+  const { user } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [createPlayer, setCreatePlayer] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,8 +26,6 @@ export default function Users() {
     newUserFormReducer,
     newUserInitialState,
   );
-
-  const token = getLocalStorage("token");
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -91,7 +90,7 @@ export default function Users() {
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${user.accessToken}`,
             },
           },
         );
@@ -120,7 +119,7 @@ export default function Users() {
       try {
         const res = await axios.get(endpoint, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         });
         console.log("res===", res);
