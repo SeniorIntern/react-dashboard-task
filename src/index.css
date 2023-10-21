@@ -12,6 +12,11 @@
   font-family: "Outfit", sans-serif;
 }
 
+body {
+  margin: 0%;
+  padding: 0%;
+}
+
 .formInput {
   border: 0.5px solid black;
   border-radius: 0.25em;

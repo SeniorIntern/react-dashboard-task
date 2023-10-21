@@ -13,6 +13,8 @@ const apiResources = {
   leaderboard: `${baseUrl}/player/leaderboard`,
   searchPlayer: `${baseUrl}/user/players/all?`,
   playGame: `${baseUrl}/player/play/game`,
+  allRoom: `${baseUrl}/chats/allRoom`,
+  roomChat: `${baseUrl}/chats/room?roomName=`,
 };
 
 export const apiResource = apiResources;

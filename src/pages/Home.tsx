@@ -169,15 +169,20 @@ export default function Home() {
           )}
         </div>
       </div>
-      <div className="pt-10 flex justify-center">
-        {isProcessing ? (
-          <button className="btn btn-green">PROCESSING...</button>
-        ) : (
-          <button className="btn btn-orange" onClick={() => simulateGame(user)}>
-            Simulate Game
-          </button>
-        )}
-      </div>
+      {user.role == "player" && (
+        <div className="pt-10 flex justify-center">
+          {isProcessing ? (
+            <button className="btn btn-green">PROCESSING...</button>
+          ) : (
+            <button
+              className="btn btn-orange"
+              onClick={() => simulateGame(user)}
+            >
+              Simulate Game
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

@@ -3,10 +3,10 @@ import User from "../helpers/types/UserType";
 import validateForm from "../validateForm";
 import axios from "axios";
 import { apiResource } from "../helpers/types/apiResource";
-import Modal from "../components/UserAddModal";
 import UserTabView from "../components/UserTabView";
 import { newUserFormReducer, newUserInitialState } from "../helpers/reducer";
 import { UserContext } from "../context/UserContext";
+import Modal from "../components/Modal";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);

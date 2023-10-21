@@ -7,8 +7,9 @@ import {
   playerUpdateInitialState,
 } from "../helpers/reducer";
 import PlayerDataType from "../helpers/types/PlayerDataType";
-import PlayerActionModal from "./PlayerActionModal";
+/* import PlayerActionModal from "./PlayerActionModal"; */
 import { UserContext } from "../context/UserContext";
+import Modal from "./Modal";
 
 interface PlayerTableProps {
   players: PlayerDataType[]; // Assuming that players is an array of PlayerDataType
@@ -225,7 +226,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
           ))}
         </tbody>
       </table>
-      <PlayerActionModal isOpen={isModalOpen} onClose={closePlayActionModal}>
+      <Modal isOpen={isModalOpen} onClose={closePlayActionModal}>
         <div className="pt-10 px-4">
           <div>
             <span>
@@ -331,7 +332,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
             </div>
           </form>
         </div>
-      </PlayerActionModal>
+      </Modal>
     </div>
   );
 };

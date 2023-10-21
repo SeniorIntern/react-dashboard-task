@@ -1,4 +1,3 @@
-// PlayerDetailsModal.tsx
 import React from "react";
 import PlayerDataType from "../helpers/types/PlayerDataType";
 

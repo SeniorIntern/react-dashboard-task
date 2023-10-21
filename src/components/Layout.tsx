@@ -25,16 +25,16 @@ export default function Layout() {
               </li>
             </>
           )}
-          {user.role == "admin" && (
+          {user.role == "admin" || user.role == "staff" ? (
             <li>
               <Link to="/players">Players</Link>
             </li>
-          )}
-          {user.role == "admin" || user.role == "staff" ? (
+          ) : null}
+          {user.role == "admin" && (
             <li>
               <Link to="/users">Users</Link>
             </li>
-          ) : null}
+          )}
         </ul>
 
         <div className="w-[50%] text-black h-full">
