@@ -70,6 +70,7 @@ export default function App() {
       console.log("updating token from context");
       localStorage.setItem("user", JSON.stringify(user));
     }
+
     const fetchPlayers = async () => {
       const endpoint = apiResource.players + `?pageSize=20&page=1`;
       try {
@@ -83,8 +84,8 @@ export default function App() {
         console.log(e);
       }
     };
-    fetchPlayers();
-  }, [user]);
+    user.accessToken && user.role !== "player" && fetchPlayers();
+  }, [user.accessToken]);
 
   /* useEffect(() => {
   }, []);

@@ -27,7 +27,6 @@ export default function Players() {
           Authorization: `Bearer ${user.accessToken}`,
         },
       });
-      console.log("players endpoint===", endpoint);
       console.log("players res===", res);
 
       if (setPlayers) {
