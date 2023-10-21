@@ -5,6 +5,9 @@ import { UserContext } from "../context/UserContext";
 import Modal from "../components/Modal";
 import { RoomChatType, RoomType } from "../helpers/types/GroupChatTypes";
 import { apiResource } from "../helpers/apiResource";
+import { ToastContainer, Zoom, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../toast.css";
 
 const Chat: React.FC = () => {
   const { user } = useContext(UserContext);
@@ -131,7 +134,17 @@ const Chat: React.FC = () => {
           ...prevRoomMessages,
           res.message,
         ]);
-        alert(res.message);
+        /* alert(res.message); */
+        toast.success(`${res.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
       setRoomName("");
     }
@@ -154,13 +167,37 @@ const Chat: React.FC = () => {
       "leave_room",
       { roomName: roomName },
       (res: { message: string }) => {
-        alert(res.message);
+        /* alert(res.message); */
+        toast.success(`${res.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       },
     );
   };
 
   return (
     <div className="min-h-[2rem] flex flex-col">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Zoom}
+      />
+
       <div id="message_room" className="w-full h-full">
         {roomMessages.map((message, index) => (
           <p className="inline text-center text-[var(--orange)]" key={index}>
@@ -219,7 +256,7 @@ const Chat: React.FC = () => {
               />
               <button
                 id="joinRoom"
-                className="btn btn-green min-w-full"
+                className="btn btn-blue min-w-full"
                 onClick={handleJoinRoom}
               >
                 Join/Create Room
@@ -266,9 +303,17 @@ const Chat: React.FC = () => {
                             <p className="bg-[var(--blue)] py-1 px-4 rounded-lg text-white w-fit">
                               {chat.message}
                             </p>
-                            <p className="text-gray-600 text-[0.75rem]">
-                              By: {chat.sender_id}
-                            </p>
+
+                            <span className="text-gray-600 text-[0.75rem]">
+                              By:
+                              {chat.sender_id === user.id ? (
+                                <p className="inline text-[var(--blue)] font-extrabold">
+                                  YOU
+                                </p>
+                              ) : (
+                                chat.sender_id
+                              )}
+                            </span>
                           </span>
                         </li>
                       ))}
@@ -421,9 +466,16 @@ const Chat: React.FC = () => {
                         <p className="bg-[var(--blue)] py-1 px-4 rounded-lg text-white w-fit">
                           {message.message}
                         </p>
-                        <p className="text-gray-600 text-[0.75rem]">
-                          By: {message.sender_id}
-                        </p>
+                        <span className="text-gray-600 text-[0.75rem]">
+                          By:
+                          {message.sender_id === user.id ? (
+                            <p className="inline text-[var(--blue)] font-bold">
+                              YOU
+                            </p>
+                          ) : (
+                            message.sender_id
+                          )}
+                        </span>
                       </span>
                     </li>
                   ))}

@@ -20,6 +20,9 @@ import axios from "axios";
 import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
 import { apiResource } from "../helpers/apiResource";
 import { UserDataType } from "../helpers/types/GroupUserTypes";
+import { ToastContainer, Zoom, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../toast.css";
 
 ChartJS.register(
   ArcElement,
@@ -112,7 +115,17 @@ export default function Home() {
       });
       console.log("simulateGame res", res);
       if (res.statusText == "OK") {
-        alert(res.data.message);
+        /* alert(res.data.message); */
+        toast.success(`${res.data.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
       const newStats = {
         id: player.id,
@@ -136,9 +149,23 @@ export default function Home() {
   };
 
   return (
-    <section className="w-full flex flex-col bg-gray-100 rounded-lg p-4">
+    <section className="w-full flex flex-col rounded-lg p-4">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Zoom}
+      />
+
       <div className="w-full flex justify-between">
-        <div className="w-[40%]">
+        <div className="w-[40%] glassContainer p-8">
           {user.role !== "player" ? (
             <Doughnut data={doughnutChartData} />
           ) : (
@@ -153,7 +180,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="w-[40%]">
+        <div className="w-[40%] glassContainer p-8">
           {user.role !== "player" ? (
             <PolarArea data={polarChartData} />
           ) : (
@@ -172,7 +199,7 @@ export default function Home() {
       {user.role == "player" && (
         <div className="pt-10 flex justify-center">
           {isProcessing ? (
-            <button className="btn btn-green">PROCESSING...</button>
+            <button className="btn btn-blue">PROCESSING...</button>
           ) : (
             <button
               className="btn btn-orange"

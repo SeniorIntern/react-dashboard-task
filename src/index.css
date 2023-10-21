@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --green: #33cc66;
+  --green: #37c190;
   --orange: #ff6600;
   --blue: #3399ff;
   --black: #313131;
@@ -15,6 +15,26 @@
 body {
   margin: 0%;
   padding: 0%;
+  background: rgb(238, 174, 202);
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(148, 187, 233, 1) 100%
+  );
+}
+
+.nav > li {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.glassContainer {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3.5px);
+  -webkit-backdrop-filter: blur(3.5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .formInput {
@@ -113,45 +133,29 @@ body {
   background-color: var(--orange);
 }
 
-table,
-td,
-th {
+table {
+  border-spacing: 0;
+  width: 95%;
   border: 1px solid black;
 }
 
-td {
+td,
+th {
+  border: 1px solid black;
   text-align: center;
-}
-table {
-  width: 95%;
-  border-collapse: collapse;
 }
 
 thead {
-  background-color: var(--orange);
+  background-color: #938cc6;
   font-size: 1.25rem;
   color: white;
 }
-
 .pagination {
-  color: var(--green);
+  color: blue;
+  font-weight: 800;
 }
 
 .inputFieldError {
   color: red;
   font-size: 0.8rem;
 }
-
-/* .search-results-container {
-  width: 100%;
-  margin-top: 4em;
-  height: fit-content;
-  border: 1px solid #ccc;
-  padding: 10px;
-  background-color: #fff;
-  background: black;
-  z-index: 999;
-  color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-} */

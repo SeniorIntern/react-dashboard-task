@@ -10,6 +10,9 @@ import { UserContext } from "../context/UserContext";
 import Modal from "./Modal";
 import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
 import { apiResource } from "../helpers/apiResource";
+import { ToastContainer, Zoom, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../toast.css";
 
 interface PlayerTableProps {
   players: PlayerDataType[]; // Assuming that players is an array of PlayerDataType
@@ -63,12 +66,33 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
       if (player) player.active = !player.active;
 
       if (res.status < 400) {
-        alert("Player status changed!");
+        /* alert("Player status changed!"); */
+        toast.success(`Player Status Changed!`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } catch (e: any) {
       setIsLoading(false);
       console.log(e);
-      e.response?.data?.message && alert(e.response.data.message);
+      e.response?.data?.message &&
+        toast.error(`${e.response?.data?.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      /* alert(e.response.data.message); */
     }
   };
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -148,20 +172,54 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
         }
 
         if (res.status < 400) {
-          alert("Update Sucessful!");
+          /* alert("Update Sucessful!"); */
+          toast.success(`Update Successful!`, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          closePlayActionModal();
         }
       } catch (e: any) {
         setIsLoading(false);
         dispatch({ type: "RESET" });
         console.log(e);
-        alert(e.response.data.message);
+        /* alert(e.response.data.message); */
+        toast.error(`${e.response.data.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
   };
 
   return (
     <div className="w-full">
-      <table className="w-full">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Zoom}
+      />
+      <table className="w-full shadow-2xl">
         <thead>
           <tr>
             <th>ID</th>
@@ -178,7 +236,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
                 <th>Change Status</th>
               </>
             ) : (
-              <td className="bg-[var(--green)]">Rank</td>
+              <td className="bg-[var(--blue)]">Rank</td>
             )}
           </tr>
         </thead>
@@ -208,17 +266,21 @@ const PlayerTable: React.FC<PlayerTableProps> = ({ players }) => {
                     <td className="text-[var(--blue)]">PROCESSING...</td>
                   ) : (
                     <td
-                      className="text-[var(--blue)] cursor-pointer"
+                      className={
+                        player.active
+                          ? "text-white font-bold cursor-pointer bg-[var(--green)]"
+                          : "text-white font-bold cursor-pointer bg-red-600 "
+                      }
                       onClick={() => {
                         handleStatusChange(player.id);
                       }}
                     >
-                      {!player.active ? "active" : "Inactive"}
+                      {player.active ? "ACTIVE" : "INACTIVE"}
                     </td>
                   )}
                 </>
               ) : (
-                <td className="bg-[var(--orange)] text-white font-bold">
+                <td className="bg-[var(--blue)] text-white font-bold">
                   {index + 1}
                 </td>
               )}

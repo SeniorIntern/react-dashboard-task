@@ -34,12 +34,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
         placeholder="Search players by name"
         value={searchInput}
         onChange={handleInputChange}
-        className="h-full w-3/4 border-2 border-[var(--green)] rounded-lg p-2"
+        className="h-full w-3/4  rounded-lg p-2"
       />
       <select
         value={selectedCountry}
         onChange={handleCountryChange}
-        className="h-full w-1/4 rounded-lg bg-green-400 text-center cursor-pointer"
+        className="h-full w-1/4 rounded-lg bg-[var(--green)] text-white font-bold text-[1.15rem] text-center cursor-pointer"
       >
         <option value="">Countries</option>
         {countries.map((country) => (

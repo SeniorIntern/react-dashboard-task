@@ -10,8 +10,8 @@ export default function Layout() {
   const { user, setUser } = useContext(UserContext);
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <nav className="flex justify-between items-center h-16 bg-[var(--orange)] px-6 text-white">
-        <ul className="flex justify-between w-[15%]">
+      <nav className="w-full flex justify-between items-center h-16 bg-[#94BBE9] shadow-2xl px-6 text-white">
+        <ul className="flex justify-between w-[20%] nav">
           <li>
             <Link to="/">Home</Link>
           </li>

@@ -7,6 +7,9 @@ import { UserContext } from "../context/UserContext";
 import Modal from "../components/Modal";
 import { User } from "../helpers/types/GroupUserTypes";
 import { apiResource } from "../helpers/apiResource";
+import { ToastContainer, Zoom, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../toast.css";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -100,14 +103,35 @@ export default function Users() {
         closeModal();
 
         if (res.status < 400) {
-          res?.data?.message && alert(res.data.message);
+          res?.data?.message &&
+            toast.success(`${res.data.message}`, {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          /* alert(res.data.message); */
         }
       } catch (e: any) {
         setIsLoading(false);
         console.log(e);
         dispatch({ type: "RESET" });
         closeModal();
-        alert(e.response.data.message);
+        /* alert(e.response.data.message); */
+        toast.error(`${e.response.data.message}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
   };
@@ -133,6 +157,20 @@ export default function Users() {
 
   return (
     <div className="w-full h-full">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Zoom}
+      />
+
       <div className="w-full flex justify-end pr-12">
         <button onClick={openModal} className="btn btn-orange">
           Create User
