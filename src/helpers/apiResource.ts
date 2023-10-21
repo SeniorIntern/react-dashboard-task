@@ -15,6 +15,7 @@ const apiResources = {
   playGame: `${baseUrl}/player/play/game`,
   allRoom: `${baseUrl}/chats/allRoom`,
   roomChat: `${baseUrl}/chats/room?roomName=`,
+  personalConversation: `${baseUrl}/chats/personal`,
 };
 
 export const apiResource = apiResources;

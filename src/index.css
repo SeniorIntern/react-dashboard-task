@@ -39,8 +39,20 @@ body {
   font-size: 1.25rem;
 }
 
+.btn-small {
+  color: #ffffff;
+  text-align: center;
+  max-width: fit-content;
+  border-radius: 0.5rem;
+  padding: 0.25rem 1rem;
+}
+
 .btn-orange {
   background-color: var(--orange);
+}
+
+.btn-blue {
+  background-color: var(--blue);
 }
 
 .btn-green {

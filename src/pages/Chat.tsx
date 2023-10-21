@@ -14,18 +14,35 @@ const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState("");
   const [roomMessages, setRoomMessages] = useState<string[]>([]);
   const [roomName, setRoomName] = useState("");
-  const [leaveRoomName, setLeaveRoomName] = useState("");
   const [roomMessageInput, setRoomMessageInput] = useState(""); // Define roomMessageInput state variable
   const [sseEvents, setSSEEvents] = useState<string[]>([]);
   const [availableRooms, setAvailableRooms] = useState<RoomType[]>([]);
   const [roomChat, setRoomChat] = useState<RoomChatType>({} as RoomChatType);
   const [recieverId, setRecieverId] = useState<string>("");
+  const [personalMessages, setPersonalMessages] = useState<
+    PersonalMessageType[]
+  >([]);
 
-  const showPlayActionModal = () => {
+  const fetchPersonalChat = async () => {
+    try {
+      const endpoint = `${apiResource.personalConversation}?senderId=${user.id}&receiverId=${recieverId}`;
+      const res = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+      console.log(`chat fetch res:`, res);
+      setPersonalMessages(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const showModal = async () => {
     setIsModalOpen(true);
+    await fetchPersonalChat();
   };
 
-  const closePlayActionModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
   };
 
@@ -97,13 +114,13 @@ const Chat: React.FC = () => {
 
   const handleSendMessage = () => {
     if (messageInput && recieverId) {
-      console.log(`emitted privateMessage paylod:`, messageInput, recieverId);
       socket.emit("privateMessage", {
         message: messageInput,
         recipientId: recieverId,
       });
       setMessageInput("");
       setRecieverId("");
+      setIsModalOpen(false);
     }
   };
 
@@ -121,211 +138,216 @@ const Chat: React.FC = () => {
   };
 
   const handleSendRoomMessage = () => {
-    const roomName = (
-      document.getElementById("messageRoomId") as HTMLInputElement
-    ).value;
-    /* const roomName = document.getElementById("messageRoomId")?.value; */
     if (roomMessageInput) {
       socket.emit("message_room", {
-        roomName: roomName, // You can change the roomName if needed
+        roomName: roomChat.name, // You can change the roomName if needed
         message: roomMessageInput,
       });
       setRoomMessageInput("");
     }
   };
 
-  const handleLeaveRoom = () => {
-    if (leaveRoomName) {
-      socket.emit(
-        "leave_room",
-        { roomName: leaveRoomName },
-        (res: { message: string }) => {
-          alert(res.message);
-          setLeaveRoomName("");
-        },
-      );
-    }
+  const handleLeaveRoom = (roomName: string) => {
+    console.log("leaving room:", roomName);
+
+    socket.emit(
+      "leave_room",
+      { roomName: roomName },
+      (res: { message: string }) => {
+        alert(res.message);
+      },
+    );
   };
 
   return (
-    <div className="min-h-[2rem] flex flex-col bg-gray-200 rounded-lg">
+    <div className="min-h-[2rem] flex flex-col">
       <div id="message_room" className="w-full h-full">
-        <p className="text-center text-[var(--orange)]">
-          Message from the server:
-        </p>
-
-        <div id="room_messages">
-          {roomMessages.map((message, index) => (
-            <p className="text-center text-gray-600" key={index}>
-              {message}
-            </p>
-          ))}
-        </div>
+        {roomMessages.map((message, index) => (
+          <p className="inline text-center text-[var(--orange)]" key={index}>
+            {message}
+          </p>
+        ))}
       </div>
 
-      <div className="w-full flex min-h-[calc(100vh-10rem)]">
-        <div className="border-dotted border-black border-2 flex flex-col">
-          <p className="text-white font-bold">ROOMS</p>
+      <div className="w-full flex min-h-[calc(100vh-10rem)] bg-gray-200 rounded-lg">
+        <div className="h-[calc(100vh-10rem)] overflow-y-scroll border-2 border-r-[var(--blue)] flex flex-col justify-between p-2">
           <div>
-            {availableRooms.map((room) => (
-              <div key={room.name}>
-                {room.name}
-                <button
+            {availableRooms.length < 0 && (
+              <div className="">
+                <p className="text-white font-bold">No Room Found!</p>
+                <p>Create Room</p>
+              </div>
+            )}
+            <div>
+              {availableRooms.map((room, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between mb-2 bg-white p-1 rounded-lg cursor-pointer h-12"
                   onClick={() => {
-                    /* setSelectedPlayer(player); */
-                    showPlayActionModal();
-                    console.log(`room selected==`, room);
                     fetchRoomDetails(room.name);
                   }}
-                  className="bg-[var(--blue)] rounded-lg text-white py-1 px-4 text-center cursor-pointer"
                 >
-                  info
-                </button>
-              </div>
-            ))}
-          </div>
-          <div id="room">
-            <input
-              id="roomInput"
-              placeholder="Enter Room Name"
-              type="text"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-            />
-            <button
-              id="joinRoom"
-              className="btn btn-orange"
-              onClick={handleJoinRoom}
-            >
-              Join/Add Room
-            </button>
-          </div>
-          <div id="leave_room">
-            <div id="leave_message"></div>
-            <input
-              id="leave_room_name"
-              placeholder="Enter Room Name"
-              type="text"
-              value={leaveRoomName}
-              onChange={(e) => setLeaveRoomName(e.target.value)}
-            />
-            <button
-              id="leaveRoom"
-              onClick={handleLeaveRoom}
-              className="btn btn-orange"
-            >
-              LeaveRoom
-            </button>
-          </div>
-        </div>
-        <div className="border-2 border-[var(--green)] p-2">
-          <input
-            id="roomMessageInput"
-            placeholder="Enter Room message"
-            type="text"
-            value={roomMessageInput}
-            onChange={(e) => setRoomMessageInput(e.target.value)}
-          />
-          <div>
-            <input
-              id="messageRoomId"
-              placeholder="enter room name"
-              type="text"
-            />
-            <button
-              id="sendRoomMessage"
-              onClick={handleSendRoomMessage}
-              className="btn btn-orange"
-            >
-              Send
-            </button>
-            (broadcast to all the users in the given room)
-          </div>
-        </div>
+                  {room.name}
 
-        <div>
-          <Modal isOpen={isModalOpen} onClose={closePlayActionModal}>
-            <div>Room Name: {roomChat.name}</div>
-
-            <div>
-              <p className="text-center text-[1.25rem]">Players</p>
-              <div className="grid gap-4">
-                {roomChat.players?.map((player, index) => (
-                  <span key={index} className="bg-green-200 p-2">
-                    <p>Name: {player.name}</p>
-                    <p>Nationality: {player.country}</p>
-                    <p>Status: {player.active ? "Active" : "Inactive"}</p>
-                  </span>
-                ))}
-              </div>
+                  {room.players.map((p, index) =>
+                    p.id == user.id ? (
+                      <button
+                        key={index}
+                        className="btn-small btn-orange"
+                        onClick={() => {
+                          handleLeaveRoom(room.name);
+                        }}
+                      >
+                        Leave
+                      </button>
+                    ) : null,
+                  )}
+                </div>
+              ))}
             </div>
-            {roomChat?.chats?.length > 0 && (
-              <div>
-                <p>Chats:</p>
-                <div className="overflow-y-auto border-2 border-[var(--blue)] rounded-lg p-4">
-                  <ul>
-                    {roomChat.chats.map((chat, index) => (
-                      <li key={index} className="grid gap-0">
-                        <p className="text-gray-600 text-[0.75rem]">
-                          {new Date(chat.created_at).toLocaleString()}
-                        </p>
-                        <span>
-                          <p className="bg-[var(--blue)] py-1 px-4 rounded-lg text-white w-fit">
-                            {chat.message}
-                          </p>
+          </div>
+
+          <div>
+            <div id="room" className="w-full">
+              <input
+                id="roomInput"
+                placeholder="Room Name"
+                type="text"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                className="w-full p-2 rounded-lg"
+              />
+              <button
+                id="joinRoom"
+                className="btn btn-green min-w-full"
+                onClick={handleJoinRoom}
+              >
+                Join/Create Room
+              </button>
+            </div>
+            {/* <div id="leave_room">
+              <input
+                id="leave_room_name"
+                placeholder="Enter Room Name"
+                type="text"
+                value={leaveRoomName}
+                onChange={(e) => setLeaveRoomName(e.target.value)}
+              />
+              <button
+                id="leaveRoom"
+                onClick={handleLeaveRoom}
+                className="btn btn-orange"
+              >
+                LeaveRoom
+              </button>
+            </div> */}
+          </div>
+        </div>
+        <div className="flex flex-col justify-between w-full">
+          <div className="flex w-full h-full">
+            <div className="w-4/5">
+              {roomChat?.chats?.length > 0 ? (
+                <div className="h-full flex flex-col justify-between">
+                  <div className="h-[calc(100vh-14rem)] overflow-y-auto border-2 rounded-lg p-4">
+                    <ul className="grid gap-4">
+                      {roomChat.chats.map((chat, index) => (
+                        <li
+                          key={index}
+                          className={
+                            chat.sender_id === user.id
+                              ? `grid gap-0 justify-end`
+                              : `grid gap-0`
+                          }
+                        >
                           <p className="text-gray-600 text-[0.75rem]">
-                            By: {chat.sender_id}
+                            {new Date(chat.created_at).toLocaleString()}
                           </p>
-                        </span>
-                      </li>
+                          <span>
+                            <p className="bg-[var(--blue)] py-1 px-4 rounded-lg text-white w-fit">
+                              {chat.message}
+                            </p>
+                            <p className="text-gray-600 text-[0.75rem]">
+                              By: {chat.sender_id}
+                            </p>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="h-fit p-2 w-full flex justify-between bg-white border-r-gray-200 border-b-gray-200 border-2">
+                    <input
+                      id="roomMessageInput"
+                      placeholder="Message"
+                      type="text"
+                      value={roomMessageInput}
+                      className="p-2 rounded-lg bg-gray-200 w-full"
+                      onChange={(e) => setRoomMessageInput(e.target.value)}
+                    />
+                    {Object.keys(roomChat).length > 0 ? (
+                      <button
+                        id="sendRoomMessage"
+                        onClick={handleSendRoomMessage}
+                        className="btn btn-orange"
+                      >
+                        Send
+                      </button>
+                    ) : (
+                      <button className="btn bg-gray-400">Send</button>
+                    )}
+                    {/* (broadcast to all the users in the given room) */}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-center text-[1.25rem] text-gray-600">
+                  Join a room to view conversation
+                </p>
+              )}
+            </div>
+            {roomChat.name && (
+              <div className="flex flex-col w-1/5 border-l-2 min-h-[calc(100vh-12rem)] border-[var(--blue)]">
+                <p>Room Name: {roomChat.name}</p>
+
+                <div>
+                  <p className="text-center text-gray-600 text-[1.25rem] border-2 border-b-[var(--blue)]">
+                    Joined Players
+                  </p>
+                  <div className="grid gap-4">
+                    {roomChat.players?.map((player, index) => (
+                      <span key={index} className="bg-blue-200 p-2">
+                        {player.name}({player.country})
+                        {player.active ? (
+                          <p title="active" className="inline">
+                            ✅
+                          </p>
+                        ) : (
+                          <p title="Inactive" className="inline">
+                            🟥
+                          </p>
+                        )}
+                        <div className="w-full flex justify-center">
+                          {player.id !== user.id ? (
+                            <button
+                              onClick={() => {
+                                setRecieverId(player.id);
+                                showModal();
+                              }}
+                              className="btn-blue btn-small"
+                            >
+                              message
+                            </button>
+                          ) : (
+                            <p>(you)</p>
+                          )}
+                        </div>
+                      </span>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             )}
-            <div className="pt-4 w-full flex justify-center">
-              <button className="btn btn-orange" onClick={closePlayActionModal}>
-                Close
-              </button>
-            </div>
-          </Modal>
+          </div>
         </div>
-        {/* Private Message */}
-        {/* <div id="chat">
-          <div id="messages">
-            {messages.map((message, index) => (
-              <p key={index} className="font-bold">
-                {message}
-              </p>
-            ))}
-          </div>
-          <input
-            id="message"
-            placeholder="Enter friend user ID"
-            type="text"
-            value={recieverId}
-            onChange={(e) => setRecieverId(e.target.value)}
-          />
-          <input
-            id="message"
-            placeholder="Type a message..."
-            type="text"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-          />
 
-          <div>
-            <button
-              id="send"
-              onClick={handleSendMessage}
-              className="btn btn-orange"
-            >
-              Send
-            </button>
-            (uses recipient id to send private message to other connected users)
-          </div>
-        </div> 
-        */}
         {/* <h2>SSE Connection</h2>
       <div id="sseEvents">
         {sseEvents.map((event, index) => (
@@ -333,6 +355,83 @@ const Chat: React.FC = () => {
         ))}
       </div> */}
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {/* Private Message */}
+
+        <div id="chat" className="grid gap-4">
+          <div id="messages">
+            {messages.map((message, index) => (
+              <p key={index} className="font-bold">
+                {message}
+              </p>
+            ))}
+          </div>
+          {/* <input
+            id="message"
+            placeholder="Enter friend user ID"
+            type="text"
+            value={recieverId}
+            onChange={(e) => setRecieverId(e.target.value)}
+          /> */}
+          <p>Reciever: {recieverId}</p>
+          <input
+            id="message"
+            placeholder="Type a message..."
+            type="text"
+            value={messageInput}
+            className="formInput"
+            onChange={(e) => setMessageInput(e.target.value)}
+          />
+
+          <div className="w-full flex justify-center">
+            <button
+              id="send"
+              onClick={handleSendMessage}
+              className="btn btn-orange"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+        <div>
+          {personalMessages.length > 0 ? (
+            <p className="text-center text-gray-600">Conversation:</p>
+          ) : (
+            <p className="text-center text-gray-600">
+              You have not started a converstation with this person yet!
+            </p>
+          )}
+          <div>
+            <div className="h-[calc(100vh-30rem)] overflow-y-auto rounded-lg p-4 border-2 border-[var(--blue)]">
+              <ul className="grid gap-4">
+                {personalMessages.length > 0 &&
+                  personalMessages.map((message, index) => (
+                    <li
+                      key={index}
+                      className={
+                        message.sender_id === user.id
+                          ? `grid gap-0 justify-end`
+                          : `grid gap-0`
+                      }
+                    >
+                      <p className="text-gray-600 text-[0.75rem]">
+                        {new Date(message.created_at).toLocaleString()}
+                      </p>
+                      <span>
+                        <p className="bg-[var(--blue)] py-1 px-4 rounded-lg text-white w-fit">
+                          {message.message}
+                        </p>
+                        <p className="text-gray-600 text-[0.75rem]">
+                          By: {message.sender_id}
+                        </p>
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -41,7 +41,7 @@ export default function Layout() {
           <Header />
         </div>
 
-        <div className="grid gap-0 w-[10%]">
+        <div className="grid gap-0 w-[10%] items-center">
           {user?.name && (
             <span className="text-center">
               {user.name.substring(0, 12)}
@@ -55,7 +55,7 @@ export default function Layout() {
               /* window.location.replace(routes.login); */
               navigate(routes.login);
             }}
-            className="bg-red-600 p-1 rounded-lg"
+            className="bg-red-600 py-1 rounded-lg text-[0.75rem]"
           >
             LOGOUT
           </button>
