@@ -1,4 +1,4 @@
-type PlayerDataType = {
+export type PlayerDataType = {
   id: string;
   name: string;
   password?: string;
@@ -12,4 +12,8 @@ type PlayerDataType = {
     games_won: number;
   };
 };
-export default PlayerDataType;
+
+export type PlayersContextType = {
+  players: PlayerDataType[];
+  setPlayers: React.Dispatch<React.SetStateAction<PlayerDataType[]>>;
+};

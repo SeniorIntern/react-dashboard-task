@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { apiResource } from "../helpers/types/apiResource";
-import PlayerDataType from "../helpers/types/PlayerDataType";
 import PlayerTable from "../components/PlayerTable";
 import { UserContext } from "../context/UserContext";
+import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
+import { apiResource } from "../helpers/apiResource";
 
 export default function Leaderboard() {
   const [topPlayers, setTopPlayers] = useState<PlayerDataType[]>([]);

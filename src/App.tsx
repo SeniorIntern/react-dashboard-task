@@ -11,13 +11,13 @@ import Layout from "./components/Layout";
 import FallbackLoader from "./components/FallbackLoader";
 import Login from "./pages/Login";
 import { UserContext } from "./context/UserContext";
-import UserDataType from "./helpers/types/UserDataType";
 import axios from "axios";
-import { apiResource } from "./helpers/types/apiResource";
 import PermissionDenied from "./pages/PermissionDenied";
 import PlayerRegistration from "./pages/PlayerRegistration";
-import PlayerDataType from "./helpers/types/PlayerDataType";
 import { PlayersContext } from "./context/PlayersContext";
+import { UserDataType } from "./helpers/types/GroupUserTypes";
+import { PlayerDataType } from "./helpers/types/GroupPlayerTypes";
+import { apiResource } from "./helpers/apiResource";
 
 const Home = lazy(() => import("./pages/Home"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -70,9 +70,6 @@ export default function App() {
       console.log("updating token from context");
       localStorage.setItem("user", JSON.stringify(user));
     }
-  }, [user]);
-
-  useEffect(() => {
     const fetchPlayers = async () => {
       const endpoint = apiResource.players + `?pageSize=20&page=1`;
       try {
@@ -86,10 +83,12 @@ export default function App() {
         console.log(e);
       }
     };
-    console.log("player fetch once...");
     fetchPlayers();
-  }, []);
+  }, [user]);
 
+  /* useEffect(() => {
+  }, []);
+*/
   type RoleTypes = "admin" | "staff" | "player";
   // function to check if the user has the required role
   const hasRole = (user: UserDataType, requiredRole: RoleTypes) => {

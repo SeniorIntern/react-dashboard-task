@@ -1,4 +1,4 @@
-import FormInputError from "./helpers/types/FormInputError";
+import FormInputError from "./helpers/types/GroupFormTypes";
 
 // all users
 interface LoginForm {

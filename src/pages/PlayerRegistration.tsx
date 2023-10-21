@@ -6,9 +6,9 @@ import {
   registrationInitialState,
 } from "../helpers/reducer";
 import validateForm from "../validateForm";
-import { apiResource } from "../helpers/types/apiResource";
 import { Link, useNavigate } from "react-router-dom";
 import routes from "../helpers/routes";
+import { apiResource } from "../helpers/apiResource";
 
 export default function PlayerRegistration() {
   const navigate = useNavigate();

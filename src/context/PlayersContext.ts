@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import PlayersContextType from "../helpers/types/PlayersContextType";
+import { PlayersContextType } from "../helpers/types/GroupPlayerTypes";
 
 export const PlayersContext = createContext<PlayersContextType | undefined>(
   undefined,

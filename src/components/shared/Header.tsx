@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import PlayerDataType from "../../helpers/types/PlayerDataType";
 import PlayerDetailsModal from "../PlayerDetailsModal";
 import SearchBar from "../SearchBar";
-import { apiResource } from "../../helpers/types/apiResource";
 import axios from "axios";
 import { UserContext } from "../../context/UserContext";
+import { PlayerDataType } from "../../helpers/types/GroupPlayerTypes";
+import { apiResource } from "../../helpers/apiResource";
 
 export default function Header() {
   const [searchResults, setSearchResults] = useState<PlayerDataType[]>([]);

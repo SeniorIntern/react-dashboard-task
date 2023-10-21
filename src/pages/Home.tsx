@@ -16,10 +16,10 @@ import {
   RadialLinearScale,
 } from "chart.js";
 import { UserContext } from "../context/UserContext";
-import PlayerDataType from "../helpers/types/PlayerDataType";
 import axios from "axios";
-import { apiResource } from "../helpers/types/apiResource";
-import UserDataType from "../helpers/types/UserDataType";
+import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
+import { apiResource } from "../helpers/apiResource";
+import { UserDataType } from "../helpers/types/GroupUserTypes";
 
 ChartJS.register(
   ArcElement,

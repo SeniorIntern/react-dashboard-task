@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import User from "../helpers/types/UserType";
+import { User } from "../helpers/types/GroupUserTypes";
 
 type UserTabViewProps = {
   users: User[];

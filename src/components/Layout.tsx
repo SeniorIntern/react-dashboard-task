@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import UserDataType from "../helpers/types/UserDataType";
 import Header from "./shared/Header";
 import routes from "../helpers/routes";
+import { UserDataType } from "../helpers/types/GroupUserTypes";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export default function Layout() {
           </button>
         </div>
       </nav>
-      <main className="min-h-[calc(100vh-4rem)] p-12 flex flex-col justify-center">
+      <main className="min-h-[calc(100vh-4rem)] flex flex-col p-12 ">
         <Outlet />
       </main>
     </div>

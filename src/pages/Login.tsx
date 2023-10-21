@@ -3,9 +3,9 @@ import { loginFormReducer, loginInitialState } from "../helpers/reducer";
 import validateForm from "../validateForm";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { apiResource } from "../helpers/types/apiResource";
 import routes from "../helpers/routes";
 import { UserContext } from "../context/UserContext";
+import { apiResource } from "../helpers/apiResource";
 
 export default function Login() {
   const navigate = useNavigate();

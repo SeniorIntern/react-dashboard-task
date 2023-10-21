@@ -1,15 +1,15 @@
 import React, { useContext, useReducer, useState } from "react";
 import axios from "axios";
-import { apiResource } from "../helpers/types/apiResource";
 import validateForm from "../validateForm";
 import {
   playerUpdateFormReducer,
   playerUpdateInitialState,
 } from "../helpers/reducer";
-import PlayerDataType from "../helpers/types/PlayerDataType";
 /* import PlayerActionModal from "./PlayerActionModal"; */
 import { UserContext } from "../context/UserContext";
 import Modal from "./Modal";
+import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
+import { apiResource } from "../helpers/apiResource";
 
 interface PlayerTableProps {
   players: PlayerDataType[]; // Assuming that players is an array of PlayerDataType

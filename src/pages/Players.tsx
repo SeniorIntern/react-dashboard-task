@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import PlayerTable from "../components/PlayerTable";
 import PaginationLinkTypes from "../helpers/types/PaginationLinkTypes";
 import axios from "axios";
-import { apiResource } from "../helpers/types/apiResource";
 import { PlayersContext } from "../context/PlayersContext";
 import { UserContext } from "../context/UserContext";
+import { apiResource } from "../helpers/apiResource";
 
 export default function Players() {
   const contextValue = useContext(PlayersContext);

@@ -1,15 +1,13 @@
 import {
   LoginFormAction,
-  NewUserFormAction,
-  PlayerUpdateFormAction,
-  RegistrationFormAction,
-} from "./types/FormActionTypes";
-import {
   LoginFormState,
+  NewUserFormAction,
   NewUserFormState,
+  PlayerUpdateFormAction,
   PlayerUpdateFormState,
+  RegistrationFormAction,
   RegistrationFormState,
-} from "./types/FormStateTypes";
+} from "./types/GroupFormTypes";
 
 // initial state for all user (admin, staff, player)  form
 export const loginInitialState: LoginFormState = {

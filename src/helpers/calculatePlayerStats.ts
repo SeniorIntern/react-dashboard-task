@@ -1,4 +1,4 @@
-import PlayerDataType from "./types/PlayerDataType";
+import { PlayerDataType } from "./types/GroupPlayerTypes";
 
 export default function calculatePlayerStats(players: PlayerDataType[]) {
   const countryCounts: { [country: string]: number } = {};

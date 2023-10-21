@@ -1,5 +1,5 @@
 import React from "react";
-import PlayerDataType from "../helpers/types/PlayerDataType";
+import { PlayerDataType } from "../helpers/types/GroupPlayerTypes";
 
 interface PlayerDetailsModalProps {
   player: PlayerDataType | null;
