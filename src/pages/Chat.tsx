@@ -22,9 +22,26 @@ const Chat: React.FC = () => {
   const [availableRooms, setAvailableRooms] = useState<RoomType[]>([]);
   const [roomChat, setRoomChat] = useState<RoomChatType>({} as RoomChatType);
   const [recieverId, setRecieverId] = useState<string>("");
+  const [isUpdatingChat, setIsUpdaingChat] = useState<boolean>(false);
   const [personalMessages, setPersonalMessages] = useState<
     PersonalMessageType[]
   >([]);
+
+  const fetchRooms = async () => {
+    try {
+      const res = await axios.get(apiResource.allRoom, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+      console.log("rooms fetch res=", res);
+      console.log("availble rooms ", res.data);
+
+      setAvailableRooms(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchPersonalChat = async () => {
     try {
@@ -89,19 +106,6 @@ const Chat: React.FC = () => {
       console.log("disconnected");
     });
 
-    const fetchRooms = async () => {
-      try {
-        const res = await axios.get(apiResource.allRoom, {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-          },
-        });
-        console.log("rooms res=", res);
-        setAvailableRooms(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchRooms();
   }, []);
 
@@ -148,6 +152,7 @@ const Chat: React.FC = () => {
       });
       setRoomName("");
     }
+    fetchRooms();
   };
 
   const handleSendRoomMessage = () => {
@@ -156,11 +161,16 @@ const Chat: React.FC = () => {
         roomName: roomChat.name, // You can change the roomName if needed
         message: roomMessageInput,
       });
+      setIsUpdaingChat(true);
+      setTimeout(() => {
+        fetchRoomDetails(roomChat.name);
+        setIsUpdaingChat(false);
+      }, 2000);
       setRoomMessageInput("");
     }
   };
 
-  const handleLeaveRoom = (roomName: string) => {
+  const handleLeaveRoom = async (roomName: string) => {
     console.log("leaving room:", roomName);
 
     socket.emit(
@@ -180,6 +190,7 @@ const Chat: React.FC = () => {
         });
       },
     );
+    await fetchRooms();
   };
 
   return (
@@ -199,6 +210,7 @@ const Chat: React.FC = () => {
       />
 
       <div id="message_room" className="w-full h-full">
+        <p>room count: {availableRooms.length}</p>
         {roomMessages.map((message, index) => (
           <p className="inline text-center text-[var(--orange)]" key={index}>
             {message}
@@ -262,22 +274,6 @@ const Chat: React.FC = () => {
                 Join/Create Room
               </button>
             </div>
-            {/* <div id="leave_room">
-              <input
-                id="leave_room_name"
-                placeholder="Enter Room Name"
-                type="text"
-                value={leaveRoomName}
-                onChange={(e) => setLeaveRoomName(e.target.value)}
-              />
-              <button
-                id="leaveRoom"
-                onClick={handleLeaveRoom}
-                className="btn btn-orange"
-              >
-                LeaveRoom
-              </button>
-            </div> */}
           </div>
         </div>
         <div className="flex flex-col justify-between w-full">
@@ -334,7 +330,11 @@ const Chat: React.FC = () => {
                         onClick={handleSendRoomMessage}
                         className="btn btn-orange"
                       >
-                        Send
+                        {isUpdatingChat ? (
+                          <span>Updating...</span>
+                        ) : (
+                          <span>Send</span>
+                        )}
                       </button>
                     ) : (
                       <button className="btn bg-gray-400">Send</button>
