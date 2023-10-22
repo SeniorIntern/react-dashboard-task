@@ -29,6 +29,7 @@ export default function Users() {
     newUserFormReducer,
     newUserInitialState,
   );
+  const [refreshTabCount, setRefreshTabCount] = useState<number>(0);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -114,6 +115,7 @@ export default function Users() {
               progress: undefined,
               theme: "light",
             });
+          setRefreshTabCount((prevCount) => prevCount + 1);
           /* alert(res.data.message); */
         }
       } catch (e: any) {
@@ -146,14 +148,14 @@ export default function Users() {
             Authorization: `Bearer ${user.accessToken}`,
           },
         });
-        console.log("res===", res);
+        console.log("users res===", res);
         setUsers(res.data.data);
       } catch (e: unknown) {
         console.log(e);
       }
     };
     init();
-  }, []);
+  }, [refreshTabCount]);
 
   return (
     <div className="w-full h-full">
